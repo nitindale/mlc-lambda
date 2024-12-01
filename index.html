@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather API</title>
+  </head>
+  <body>
+    <h1>Weather API</h1>
+    <input type="text" id="city" placeholder="Enter city name" />
+    <button onclick="fetchWeather()">Get Current Weather</button>
+    <button onclick="getHistory()">Get Historical Weather</button>
+    <pre id="result"></pre>
+
+    <script>
+      const API_BASE = "API_BASE_URL";
+
+      // Utility function for handling API requests
+      async function apiRequest(url) {
+        try {
+          const response = await fetch(url, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(
+              `Error: ${response.status} - ${response.statusText}`
+            );
+          }
+
+          return await response.json();
+        } catch (error) {
+          console.error("API Request Failed:", error);
+          return { error: error.message };
+        }
+      }
+
+      async function fetchWeather() {
+        const city = document.getElementById("city").value.trim();
+        if (!city) {
+          alert("Please enter a city name.");
+          return;
+        }
+        const data = await apiRequest(`${API_BASE}/weather/${city}`);
+        document.getElementById("result").innerText = JSON.stringify(
+          data,
+          null,
+          2
+        );
+      }
+
+      async function getHistory() {
+        const city = document.getElementById("city").value.trim();
+        if (!city) {
+          alert("Please enter a city name.");
+          return;
+        }
+        const data = await apiRequest(`${API_BASE}/weather/history/${city}`);
+        document.getElementById("result").innerText = JSON.stringify(
+          data,
+          null,
+          2
+        );
+      }
+    </script>
+  </body>
+</html>
